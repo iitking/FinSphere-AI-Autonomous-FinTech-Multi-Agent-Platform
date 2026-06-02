@@ -11,3 +11,8 @@ class Settings(BaseSettings):
     max_tokens: int = 4096
     temperature: float = 0.2
     mock_mode: bool = False
+    base_currency: str = "INR"
+    usd_to_inr_rate: float = 86.50
+    stcg_tax_rate: float = 0.20
+    ltcg_tax_rate: float = 0.125
+    risk_free_rate: float = 0.07
