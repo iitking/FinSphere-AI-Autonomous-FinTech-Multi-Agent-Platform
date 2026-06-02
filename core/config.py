@@ -16,3 +16,9 @@ class Settings(BaseSettings):
     stcg_tax_rate: float = 0.20
     ltcg_tax_rate: float = 0.125
     risk_free_rate: float = 0.07
+    max_input_length: int = 8000
+    min_output_length: int = 10
+    max_output_length: int = 16000
+    strict_input_guardrail: bool = False
+    enable_pii_redaction: bool = True
+    enable_indian_pii: bool = True
