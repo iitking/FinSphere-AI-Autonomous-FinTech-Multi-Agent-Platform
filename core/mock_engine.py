@@ -15,3 +15,4 @@ class MockEngine:
     @staticmethod
     def generate_response(agent_name: str, messages: list, tools: list = None):
         return MockClaudeResponse([MockMessageBlock("text", "Synthesizing analysis...")])
+# Fundamental analysis response handlers
