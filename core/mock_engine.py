@@ -17,3 +17,4 @@ class MockEngine:
         return MockClaudeResponse([MockMessageBlock("text", "Synthesizing analysis...")])
 # Fundamental analysis response handlers
 # Risk scoring response generator
+# Portfolio allocation generator
