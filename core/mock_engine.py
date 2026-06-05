@@ -19,3 +19,4 @@ class MockEngine:
 # Risk scoring response generator
 # Portfolio allocation generator
 # Risk profile variants
+# Fraud anomaly generator
