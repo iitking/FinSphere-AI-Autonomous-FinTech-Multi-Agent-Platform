@@ -18,3 +18,4 @@ class MockEngine:
 # Fundamental analysis response handlers
 # Risk scoring response generator
 # Portfolio allocation generator
+# Risk profile variants
