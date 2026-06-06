@@ -14,3 +14,11 @@ class GuardrailResult(BaseModel):
     reason: Optional[str] = None
     sanitized_text: Optional[str] = None
     pii_types: List[str] = Field(default_factory=list)
+class AgentResponse(BaseModel):
+    agent: str
+    success: bool
+    output: str
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    elapsed_s: float = 0.0
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    guardrail_flags: List[str] = Field(default_factory=list)
