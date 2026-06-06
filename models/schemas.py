@@ -29,3 +29,11 @@ class AnalysisRequest(BaseModel):
 
 class AnalysisResponse(AgentResponse):
     ticker: str = ""
+class RiskRequest(BaseModel):
+    asset_description: str
+    portfolio_size_inr: Optional[float] = None
+    investor_profile: str = "moderate"
+
+class RiskResponse(AgentResponse):
+    risk_level: RiskLevel = RiskLevel.MEDIUM
+    risk_score: float = 0.0
