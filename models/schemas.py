@@ -22,3 +22,10 @@ class AgentResponse(BaseModel):
     elapsed_s: float = 0.0
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     guardrail_flags: List[str] = Field(default_factory=list)
+class AnalysisRequest(BaseModel):
+    ticker: str
+    timeframe: str = "1Y"
+    include_sentiment: bool = True
+
+class AnalysisResponse(AgentResponse):
+    ticker: str = ""
