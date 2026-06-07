@@ -37,3 +37,11 @@ class RiskRequest(BaseModel):
 class RiskResponse(AgentResponse):
     risk_level: RiskLevel = RiskLevel.MEDIUM
     risk_score: float = 0.0
+class PortfolioRequest(BaseModel):
+    assets: List[str] = Field(default_factory=list)
+    capital_inr: float
+    risk_tolerance: str = "moderate"
+    horizon_years: int = 5
+
+class PortfolioResponse(AgentResponse):
+    allocation: Dict[str, float] = Field(default_factory=dict)
