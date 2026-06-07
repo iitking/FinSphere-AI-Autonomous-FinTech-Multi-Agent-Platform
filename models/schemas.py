@@ -53,3 +53,9 @@ class Transaction(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     user_id: str
     channel: str = "UPI"
+class FraudRequest(BaseModel):
+    transactions: List[Transaction]
+
+class FraudResponse(AgentResponse):
+    flagged: List[str] = Field(default_factory=list)
+    fraud_scores: Dict[str, float] = Field(default_factory=dict)
