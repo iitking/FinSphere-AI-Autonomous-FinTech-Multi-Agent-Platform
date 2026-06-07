@@ -59,3 +59,10 @@ class FraudRequest(BaseModel):
 class FraudResponse(AgentResponse):
     flagged: List[str] = Field(default_factory=list)
     fraud_scores: Dict[str, float] = Field(default_factory=dict)
+class ComplianceRequest(BaseModel):
+    document_text: str
+    regulation_context: str = "RBI, SEBI, PMLA"
+    jurisdiction: str = "India"
+
+class ComplianceResponse(AgentResponse):
+    compliant: bool = True
