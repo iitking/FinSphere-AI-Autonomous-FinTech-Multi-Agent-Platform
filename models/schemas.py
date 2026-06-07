@@ -45,3 +45,11 @@ class PortfolioRequest(BaseModel):
 
 class PortfolioResponse(AgentResponse):
     allocation: Dict[str, float] = Field(default_factory=dict)
+class Transaction(BaseModel):
+    transaction_id: str
+    amount_inr: float
+    merchant: str
+    location: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    user_id: str
+    channel: str = "UPI"
