@@ -10,3 +10,9 @@ INJECTION_PATTERNS.extend([
     r"\bdan\s+mode\b",
     r"system\s*prompt\s*(reveal|leak|show|print|dump)",
 ])
+DISALLOWED_TOPICS: List[str] = [
+    r"\bmanipulate\s+(stock|market|price|securities)\b",
+    r"\binsider\s+trad(e|ing)\b",
+    r"\bwash\s+trad(e|ing)\b",
+    r"\bpump\s+and\s+dump\b",
+]
