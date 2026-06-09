@@ -16,3 +16,8 @@ DISALLOWED_TOPICS: List[str] = [
     r"\bwash\s+trad(e|ing)\b",
     r"\bpump\s+and\s+dump\b",
 ]
+DISALLOWED_TOPICS.extend([
+    r"\bmoney\s+launder(ing)?\b",
+    r"\bevade\s+(tax|taxes|regulation|kyc|aml|pmla)\b",
+    r"\bhawala\s+transaction(s)?\b",
+])
