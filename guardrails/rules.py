@@ -27,3 +27,4 @@ GLOBAL_PII_PATTERNS: List[Tuple[str, str]] = [
     (r"\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b", "email"),
 ]
 # PAN Card regex pattern
+# Aadhaar regex pattern
