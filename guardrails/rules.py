@@ -29,3 +29,4 @@ GLOBAL_PII_PATTERNS: List[Tuple[str, str]] = [
 # PAN Card regex pattern
 # Aadhaar regex pattern
 # Indian mobile regex
+# IFSC regex
