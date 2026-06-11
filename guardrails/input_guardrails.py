@@ -8,3 +8,4 @@ class InputGuardrails:
     strict_mode: bool = field(default_factory=lambda: settings.strict_input_guardrail)
 # Payload length checking
 # Injection check
+# Prohibited topics
