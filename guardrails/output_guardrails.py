@@ -9,3 +9,4 @@ class OutputGuardrails:
 # Length bounds
 # Disclaimer append
 # Hallucination guard
+# Toxicity block
