@@ -8,3 +8,4 @@ class OutputGuardrails:
     pass
 # Length bounds
 # Disclaimer append
+# Hallucination guard
