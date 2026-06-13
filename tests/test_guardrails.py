@@ -8,3 +8,6 @@ def input_guard(): return InputGuardrails()
 
 @pytest.fixture
 def output_guard(): return OutputGuardrails()
+def test_clean_input_passes(input_guard):
+    res = input_guard.validate("Analyze HDFC Bank financial performance for Q4.")
+    assert res.passed
