@@ -19,3 +19,4 @@ def test_disallowed_topic_blocked(input_guard):
     assert not res.passed
 # PAN and Aadhaar tests
 # Phone and UPI tests
+# SSN tests
