@@ -9,3 +9,4 @@ class BaseAgent(ABC):
     name: str = "base"
     description: str = ""
 # Client init
+# Simulation fallback
