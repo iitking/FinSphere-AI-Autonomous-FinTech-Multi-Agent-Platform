@@ -8,3 +8,4 @@ from guardrails.output_guardrails import OutputGuardrails
 class BaseAgent(ABC):
     name: str = "base"
     description: str = ""
+# Client init
