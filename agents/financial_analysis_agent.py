@@ -6,3 +6,4 @@ class FinancialAnalysisAgent(BaseAgent):
 # Tool schema
 # System prompt
 # Tool call logic
+# Guardrails hook
