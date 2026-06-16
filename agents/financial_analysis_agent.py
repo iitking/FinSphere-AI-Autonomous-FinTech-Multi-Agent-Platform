@@ -5,3 +5,4 @@ class FinancialAnalysisAgent(BaseAgent):
     name = "financial_analysis"
 # Tool schema
 # System prompt
+# Tool call logic
