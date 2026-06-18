@@ -5,3 +5,4 @@ class PortfolioAgent(BaseAgent):
     name = "portfolio"
 # Allocation tool schema
 # Indian asset classes
+# Tax optimization
