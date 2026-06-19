@@ -6,3 +6,4 @@ class FraudDetectionAgent(BaseAgent):
 # Fraud tool schema
 # Tier 1 heuristics
 # Velocity window
+# Tier 2 LLM analysis
