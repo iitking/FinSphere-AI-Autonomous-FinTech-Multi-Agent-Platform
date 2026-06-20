@@ -5,3 +5,4 @@ class ComplianceAgent(BaseAgent):
     name = "compliance"
 # Compliance tool schema
 # Statutory audit prompt
+# DPDP Act checks
