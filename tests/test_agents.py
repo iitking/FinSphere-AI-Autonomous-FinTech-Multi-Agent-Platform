@@ -15,3 +15,8 @@ async def test_risk_assessment_agent():
     agent = RiskAssessmentAgent()
     resp = await agent.run("Assess risk for unsecured retail loan book")
     assert resp.success
+@pytest.mark.asyncio
+async def test_portfolio_agent():
+    agent = PortfolioAgent()
+    resp = await agent.run("Allocate 5000000 for moderate risk appetite")
+    assert resp.success
