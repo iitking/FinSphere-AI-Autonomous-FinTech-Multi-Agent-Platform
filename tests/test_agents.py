@@ -20,3 +20,8 @@ async def test_portfolio_agent():
     agent = PortfolioAgent()
     resp = await agent.run("Allocate 5000000 for moderate risk appetite")
     assert resp.success
+@pytest.mark.asyncio
+async def test_fraud_detection_agent_heuristics():
+    agent = FraudDetectionAgent()
+    resp = await agent.run("Scan transactions", context={"transactions": [{"transaction_id": "T1", "amount_inr": 250000}]})
+    assert resp.success
