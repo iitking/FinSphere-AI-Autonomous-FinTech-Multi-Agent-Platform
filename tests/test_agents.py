@@ -10,3 +10,8 @@ async def test_financial_analysis_agent():
     agent = FinancialAnalysisAgent()
     resp = await agent.run("Analyze HDFCBANK fundamentals over 1Y")
     assert resp.success
+@pytest.mark.asyncio
+async def test_risk_assessment_agent():
+    agent = RiskAssessmentAgent()
+    resp = await agent.run("Assess risk for unsecured retail loan book")
+    assert resp.success
