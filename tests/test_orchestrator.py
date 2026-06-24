@@ -6,3 +6,4 @@ from agents.orchestrator import Orchestrator
 def orchestrator(): return Orchestrator()
 # Intent classification tests
 # Route execution tests
+# Pipeline tests
