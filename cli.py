@@ -4,3 +4,4 @@ import asyncio
 # Table formatting
 # Subcommands
 # Scanner subcommands
+# Demo command
