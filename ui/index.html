@@ -1,6 +1,483 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-<head><title>FinSphere AI</title></head>
-<body>
-<!-- Navigation Sidebar -->
-<!-- Pipeline Stepper -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinSphere AI | Institutional Multi-Agent Financial Platform</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & Chart.js & Lucide Icons & Marked -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              900: '#164e63',
+            },
+            dark: {
+              base: '#080c14',
+              card: '#0f172a',
+              cardHover: '#1e293b',
+              border: '#1e293b',
+              borderLight: '#334155',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-dark-base text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-50 bg-dark-base/90 backdrop-blur-md border-b border-dark-border px-6 py-3.5 flex items-center justify-between">
+    <!-- Brand -->
+    <div class="flex items-center gap-3.5">
+      <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 p-[1px] shadow-lg shadow-cyan-500/20">
+        <div class="h-full w-full bg-dark-card rounded-[11px] flex items-center justify-center">
+          <i data-lucide="shield-check" class="w-5 h-5 text-cyan-400"></i>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-base font-bold tracking-tight text-white">FinSphere AI</h1>
+          <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-full">v2.0 Enterprise</span>
+        </div>
+        <p class="text-xs text-slate-400 font-medium">Autonomous Multi-Agent Financial Intelligence & Guardrails</p>
+      </div>
+    </div>
+
+    <!-- Live Status Indicators -->
+    <div class="flex items-center gap-3">
+      <!-- Engine Status -->
+      <div id="engineStatusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <span id="engineStatusText" class="text-slate-300">Checking Engine...</span>
+      </div>
+
+      <!-- Active Model -->
+      <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs text-slate-400 font-mono">
+        <i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i>
+        <span id="activeModelLabel">claude-3-7-sonnet</span>
+      </div>
+
+      <!-- Quick Links -->
+      <a href="/docs" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-card hover:bg-slate-800 text-slate-300 hover:text-white border border-dark-border transition">
+        <i data-lucide="terminal" class="w-3.5 h-3.5 text-slate-400"></i>
+        <span>API Docs</span>
+      </a>
+      <a href="https://github.com" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition">
+        <i data-lucide="github" class="w-3.5 h-3.5"></i>
+        <span>GitHub Repo</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Application Layout -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- Left Navigation Sidebar -->
+    <aside class="w-72 bg-dark-base border-r border-dark-border flex flex-col justify-between p-4 shrink-0 overflow-y-auto">
+      <div class="space-y-6">
+        <div>
+          <span class="px-3 text-[11px] font-bold tracking-wider text-slate-500 uppercase">Intelligence Agents</span>
+          <nav class="mt-2 space-y-1" id="agentNavList">
+            <!-- Orchestrator -->
+            <button class="nav-btn w-full active" data-agent="orchestrator">
+              <div class="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 group-hover:bg-cyan-500/20 transition">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-white truncate">Autonomous Router</div>
+                <div class="text-[11px] text-slate-400 truncate">Intent classifier & pipeline</div>
+              </div>
+            </button>
+
+            <!-- Financial Analysis -->
+            <button class="nav-btn w-full" data-agent="financial_analysis">
+              <div class="p-2 rounded-lg bg-blue-500/10 text-blue-400 transition">
+                <i data-lucide="line-chart" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-slate-300 truncate">Financial Research</div>
+                <div class="text-[11px] text-slate-400 truncate">Fundamentals & multiples</div>
+              </div>
+            </button>
+
+            <!-- Risk Assessment -->
+            <button class="nav-btn w-full" data-agent="risk_assessment">
+              <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400 transition">
+                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-slate-300 truncate">Risk Assessment</div>
+                <div class="text-[11px] text-slate-400 truncate">5-factor scoring & stress test</div>
+              </div>
+            </button>
+
+            <!-- Portfolio Optimization -->
+            <button class="nav-btn w-full" data-agent="portfolio">
+              <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 transition">
+                <i data-lucide="pie-chart" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-slate-300 truncate">Portfolio Optimizer</div>
+                <div class="text-[11px] text-slate-400 truncate">MPT allocation & tax efficiency</div>
+              </div>
+            </button>
+
+            <!-- Fraud Detection -->
+            <button class="nav-btn w-full" data-agent="fraud_detection">
+              <div class="p-2 rounded-lg bg-rose-500/10 text-rose-400 transition">
+                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-slate-300 truncate">Fraud Watchtower</div>
+                <div class="text-[11px] text-slate-400 truncate">Heuristics & anomaly engine</div>
+              </div>
+            </button>
+
+            <!-- Compliance -->
+            <button class="nav-btn w-full" data-agent="compliance">
+              <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400 transition">
+                <i data-lucide="scale" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-slate-300 truncate">Regulatory Compliance</div>
+                <div class="text-[11px] text-slate-400 truncate">RBI, SEBI, PMLA & DPDP audit</div>
+              </div>
+            </button>
+          </nav>
+        </div>
+
+        <div>
+          <span class="px-3 text-[11px] font-bold tracking-wider text-slate-500 uppercase">Configuration</span>
+          <nav class="mt-2 space-y-1">
+            <button class="nav-btn w-full" data-agent="parameters">
+              <div class="p-2 rounded-lg bg-slate-800 text-slate-400 transition">
+                <i data-lucide="sliders" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-slate-300 truncate">System Parameters</div>
+                <div class="text-[11px] text-slate-400 truncate">Weights, tax & fraud rules</div>
+              </div>
+            </button>
+            <button class="nav-btn w-full" data-agent="guardrails_inspector">
+              <div class="p-2 rounded-lg bg-slate-800 text-slate-400 transition">
+                <i data-lucide="shield" class="w-4 h-4"></i>
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <div class="text-xs font-semibold text-slate-300 truncate">Guardrails Live Sandbox</div>
+                <div class="text-[11px] text-slate-400 truncate">Real-time PII & prompt shield</div>
+              </div>
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Enterprise Guardrail Shield Health Widget -->
+      <div class="mt-6 p-3.5 rounded-xl bg-dark-card border border-dark-border">
+        <div class="flex items-center justify-between mb-2.5">
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+            <span class="text-xs font-bold text-white">Security Perimeter</span>
+          </div>
+          <span class="px-1.5 py-0.5 text-[9px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded">SHIELD ACTIVE</span>
+        </div>
+        <div class="space-y-1.5 text-[11px]">
+          <div class="flex justify-between text-slate-400">
+            <span>Indian PII (PAN/Aadhaar)</span>
+            <span class="text-emerald-400 font-mono font-medium">Masking ON</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>UPI VPA & Mobile (+91)</span>
+            <span class="text-emerald-400 font-mono font-medium">Masking ON</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>Prompt Injection Defense</span>
+            <span class="text-cyan-400 font-mono font-medium">15+ Rules</span>
+          </div>
+          <div class="flex justify-between text-slate-400">
+            <span>Mandatory Disclaimer</span>
+            <span class="text-cyan-400 font-mono font-medium">SEBI / RBI</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Workspace Main Panel -->
+    <main class="flex-1 overflow-y-auto p-8 space-y-6">
+      
+      <!-- Top Title & Scenario Launcher -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-dark-border">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h2 id="viewTitle" class="text-2xl font-bold tracking-tight text-white">Autonomous Router</h2>
+            <span id="viewBadge" class="px-2.5 py-0.5 text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-full">Semantic Dispatch</span>
+          </div>
+          <p id="viewDesc" class="mt-1 text-sm text-slate-400">Intelligently classifies intent, routes to optimal agents, or chains sequential pipelines.</p>
+        </div>
+
+        <!-- Pre-configured Financial Scenarios -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 max-w-xl">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider shrink-0 flex items-center gap-1">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Presets:
+          </span>
+          <div id="presetsList" class="flex items-center gap-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Pipeline Visual Flow Indicator (Shown when Router is active) -->
+      <div id="pipelineFlowVisual" class="p-4 rounded-xl bg-dark-card border border-dark-border">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="git-merge" class="w-4 h-4 text-cyan-400"></i>
+            <span class="text-xs font-bold text-slate-200">Execution Pipeline Topology</span>
+          </div>
+          <label class="flex items-center gap-2 text-xs font-medium text-slate-300 cursor-pointer">
+            <input type="checkbox" id="pipelineToggleCheckbox" class="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900">
+            <span>Execute 3-Agent Sequential Pipeline (Analysis &rarr; Risk &rarr; Portfolio)</span>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-center">
+          <div class="step-card active" id="stepInput">
+            <div class="step-number">1</div>
+            <div class="text-xs font-semibold text-white">Input Guard</div>
+            <div class="text-[10px] text-slate-400">PII & Injection Sanitizer</div>
+          </div>
+          <div class="step-card" id="stepRouting">
+            <div class="step-number">2</div>
+            <div class="text-xs font-semibold text-white">Intent Router</div>
+            <div class="text-[10px] text-slate-400">Semantic Classifier</div>
+          </div>
+          <div class="step-card" id="stepAgent">
+            <div class="step-number">3</div>
+            <div class="text-xs font-semibold text-white">Agent Execution</div>
+            <div class="text-[10px] text-slate-400">Claude Tool Calling</div>
+          </div>
+          <div class="step-card" id="stepOutput">
+            <div class="step-number">4</div>
+            <div class="text-xs font-semibold text-white">Output Guard</div>
+            <div class="text-[10px] text-slate-400">Disclaimer & Fact Filter</div>
+          </div>
+          <div class="step-card" id="stepPayload">
+            <div class="step-number">5</div>
+            <div class="text-xs font-semibold text-white">Structured Output</div>
+            <div class="text-[10px] text-slate-400">JSON & Narrative Telemetry</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Query Console -->
+      <div id="queryConsoleCard" class="p-5 rounded-2xl bg-dark-card border border-dark-border shadow-xl">
+        <div class="flex items-center justify-between mb-2.5">
+          <label for="promptInput" class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <i data-lucide="message-square" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>Financial Query & Context Payload</span>
+          </label>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span id="charCount" class="font-mono">0 chars</span>
+            <span class="text-slate-600">|</span>
+            <span id="piiDetectorBadge" class="flex items-center gap-1 text-emerald-400 font-medium">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> PII Protection Ready
+            </span>
+          </div>
+        </div>
+
+        <div class="relative">
+          <textarea id="promptInput" rows="4" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-sm text-slate-100 placeholder-slate-500 font-sans focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition duration-150 resize-y leading-relaxed" placeholder="Enter stock ticker, investment query, transaction batch JSON, or contract agreement text..."></textarea>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-800/80">
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <i data-lucide="info" class="w-3.5 h-3.5 text-slate-500"></i>
+            <span>Tip: Try testing with Indian PAN (<span class="font-mono text-slate-300">ABCDE1234F</span>) or Aadhaar numbers to see automatic redaction.</span>
+          </div>
+
+          <button id="executeBtn" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transform hover:-translate-y-0.5 active:translate-y-0 transition duration-150 cursor-pointer">
+            <span id="btnIcon"><i data-lucide="play" class="w-4 h-4 fill-current"></i></span>
+            <span id="btnText">Execute Intelligence</span>
+            <div id="btnSpinner" class="hidden h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- System Parameters Management View (Hidden by default) -->
+      <div id="parametersView" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white">Dynamic Runtime Parameters</h3>
+            <p class="text-xs text-slate-400">All parameters are hot-loaded from <code>core/config.py</code> and can be overridden via <code>.env</code>.</p>
+          </div>
+          <button id="refreshParamsBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-dark-card border border-dark-border text-slate-300 hover:text-white transition">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="parametersGrid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Live Guardrails Sandbox View (Hidden by default) -->
+      <div id="guardrailsView" class="hidden space-y-6">
+        <div class="p-6 rounded-2xl bg-dark-card border border-dark-border space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-white">Live Guardrail Sanitizer & Test Arena</h3>
+              <p class="text-xs text-slate-400">Type or paste sensitive Indian or Global identifiers below. Watch how the guardrails identify and redact them in real-time.</p>
+            </div>
+            <span class="px-2.5 py-1 text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">ACTIVE DEFENSE</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Raw Input Text (Try PAN, Aadhaar, UPI, Phone):</label>
+              <textarea id="guardrailTestInput" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 font-mono focus:border-cyan-500 focus:outline-none" placeholder="Client PAN is ABCDE1234F, Aadhaar 4532 9876 1234, UPI deepak@okhdfcbank, Phone +91 9876543210."></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Sanitized Output (Guardrail Result):</label>
+              <div id="guardrailTestOutput" class="w-full h-[120px] bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 text-sm text-emerald-400 font-mono overflow-y-auto whitespace-pre-wrap">Type on the left to see live masking...</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 text-center text-xs">
+            <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="font-bold text-slate-300">PAN Card</div>
+              <div class="text-[10px] text-slate-500 font-mono">[A-Z]{5}[0-9]{4}[A-Z]</div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="font-bold text-slate-300">Aadhaar (12D)</div>
+              <div class="text-[10px] text-slate-500 font-mono">[2-9]\d{3}\s?\d{4}\s?\d{4}</div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="font-bold text-slate-300">Indian Phone</div>
+              <div class="text-[10px] text-slate-500 font-mono">+91 [6-9]\d{9}</div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="font-bold text-slate-300">UPI Handles</div>
+              <div class="text-[10px] text-slate-500 font-mono">user@okhdfcbank</div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div class="font-bold text-slate-300">Bank IFSC</div>
+              <div class="text-[10px] text-slate-500 font-mono">[A-Z]{4}0[A-Z0-9]{6}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution Results Deck -->
+      <div id="resultsDeck" class="hidden space-y-6">
+        
+        <!-- Execution Overview Meta Bar -->
+        <div class="p-4 rounded-xl bg-dark-card border border-dark-border flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div id="resStatusBadge" class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <i data-lucide="check" class="w-3.5 h-3.5"></i>
+              <span>SUCCESS</span>
+            </div>
+            <span class="text-sm font-semibold text-white" id="resAgentName">Agent: Financial Analysis</span>
+            <span class="text-xs text-slate-500">&bull;</span>
+            <span class="text-xs font-mono text-cyan-400" id="resLatency">Latency: 0.42s</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="copyJsonBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span id="copyBtnText">Copy Output</span>
+            </button>
+            <button id="toggleRawJsonBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition">
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>View JSON</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="statsGrid">
+          <!-- Dynamically populated stats -->
+        </div>
+
+        <!-- Interactive Visual Chart Area (Donut for Portfolio, Radar for Risk, Bar for Fraud) -->
+        <div id="chartContainerCard" class="hidden p-6 rounded-2xl bg-dark-card border border-dark-border">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+              <h3 class="text-sm font-bold text-white" id="chartTitle">Quantitative Visualization</h3>
+            </div>
+            <span class="text-xs text-slate-400 font-mono" id="chartSubtitle">Real-time Telemetry</span>
+          </div>
+          <div class="h-64 flex items-center justify-center">
+            <canvas id="agentChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Primary Narrative Synthesis Card -->
+        <div class="p-6 rounded-2xl bg-dark-card border border-dark-border space-y-3">
+          <div class="flex items-center justify-between pb-3 border-b border-dark-border">
+            <div class="flex items-center gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-cyan-400"></i>
+              <h3 class="text-sm font-bold text-white tracking-wide uppercase">Cognitive Synthesis & Advisory Narrative</h3>
+            </div>
+            <div id="guardrailBadges" class="flex items-center gap-1.5">
+              <!-- Guardrail tags -->
+            </div>
+          </div>
+
+          <div id="narrativeContent" class="prose prose-invert max-w-none text-slate-200 text-sm leading-relaxed pt-2">
+            <!-- Formatted Markdown from agent -->
+          </div>
+        </div>
+
+        <!-- Raw JSON Inspector Drawer -->
+        <div id="rawJsonDrawer" class="hidden p-5 rounded-2xl bg-slate-950 border border-dark-border">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-mono font-bold text-slate-400 uppercase">Complete Structured Response & Metadata</span>
+            <span class="text-[11px] text-slate-500 font-mono">application/json</span>
+          </div>
+          <pre class="bg-black/60 p-4 rounded-xl text-xs font-mono text-cyan-300 overflow-x-auto max-h-96"><code id="rawJsonCode"></code></pre>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark-base border-t border-dark-border px-6 py-3 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+    <div>FinSphere AI &bull; Autonomous Multi-Agent Financial Architecture &bull; MIT Licensed</div>
+    <div class="flex items-center gap-4">
+      <span>SEBI / RBI / PMLA / DPDP Act 2023 Compliant</span>
+      <span class="text-slate-700">|</span>
+      <span>100% Personal Rights Assigned</span>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
