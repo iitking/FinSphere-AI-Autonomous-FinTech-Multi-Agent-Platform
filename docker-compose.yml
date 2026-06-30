@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  finsphere-ai:
+    build: .
+    container_name: finsphere-multi-agent
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - HOST=0.0.0.0
+      - PORT=8000
+      - LOG_LEVEL=INFO
+      - MOCK_MODE=false
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    restart: unless-stopped
