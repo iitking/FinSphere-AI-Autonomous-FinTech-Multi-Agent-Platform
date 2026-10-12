@@ -24,53 +24,71 @@
 - [API Reference & Examples](#api-reference--examples)
 - [Running Tests](#running-tests)
 - [Docker Deployment](#docker-deployment)
-- [Push to Your Personal GitHub](#push-to-your-personal-github)
 - [Author & License](#author--license)
 
 ---
 
 ## Architecture
 
-```
-                                  User Request / Web Dashboard / CLI
-                                                  │
-                                                  ▼
-                     ┌─────────────────────────────────────────────────────────┐
-                     │                 Enterprise Input Guardrails             │
-                     │  • Prompt injection & instruction override blocking     │
-                     │  • Indian PII redaction (PAN, Aadhaar, Phone, UPI, IFSC)│
-                     │  • Prohibited financial topics (insider trading, AML)   │
-                     │  • Strict payload length bounding                       │
-                     └────────────────────────────┬────────────────────────────┘
-                                                  │
-                                                  ▼
-                     ┌─────────────────────────────────────────────────────────┐
-                     │                 Autonomous Orchestrator                 │
-                     │  • Intent classification & confidence scoring           │
-                     │  • Single-agent smart routing                           │
-                     │  • Sequential pipeline (context chaining)               │
-                     │  • Concurrent parallel agent execution                  │
-                     └──────┬──────────┬──────────┬──────────┬──────────┬──────┘
-                            │          │          │          │          │
-                            ▼          ▼          ▼          ▼          ▼
-                       ┌─────────┐┌─────────┐┌─────────┐┌─────────┐┌─────────┐
-                       │ 📊 Fin  ││ ⚠️ Risk ││ 💼 Port ││ 🔍 Fraud││ ⚖️ Comp │
-                       │Analysis ││ Assess  ││ Optim   ││ Detect  ││ Agent   │
-                       └────┬────┘└────┬────┘└────┬────┘└────┬────┘└────┬────┘
-                            │          │          │          │          │
-                            └──────────┴──────────┴──────────┴──────────┘
-                                                  │
-                                                  ▼
-                     ┌─────────────────────────────────────────────────────────┐
-                     │                Enterprise Output Guardrails             │
-                     │  • Mandatory SEBI/RBI regulatory disclaimer injection   │
-                     │  • Hallucination & guaranteed yield claim suppression   │
-                     │  • Toxic & unprofessional language filter               │
-                     │  • Response quality & length boundaries                 │
-                     └────────────────────────────┬────────────────────────────┘
-                                                  │
-                                                  ▼
-                                 Structured Response & Telemetry
+```mermaid
+flowchart TD
+    %% Entry Layer
+    U["👤 User Request / Web Dashboard / CLI"] --> K["⚡ FastAPI Gateway: POST /api/v1/orchestrator/smart"]
+
+    %% Layer 1: Input Guardrails
+    subgraph Input_Guardrails ["Enterprise Input Guardrails (guardrails/input_guardrails.py)"]
+        K --> G1["🛡️ Prompt Injection & Instruction Override Guard"]
+        G1 --> G2["🔒 Indian PII Redaction (PAN, Aadhaar, Phone, UPI, IFSC)"]
+        G2 --> G3["🚫 Prohibited Topics Enforcement (Insider Trading, AML)"]
+        G3 --> G4["📏 Strict Payload Length & Character Enforcer"]
+        G4 --> G5{"Input Checks Pass?"}
+        G5 -->|No| G6["❌ Reject Request (HTTP 400 Bad Request)"]
+    end
+
+    %% Layer 2: Orchestration
+    subgraph Orchestration_Layer ["Autonomous Multi-Agent Orchestrator (agents/orchestrator.py)"]
+        G5 -->|Yes| ORCH["🧠 Intent Classification & Confidence Scoring"]
+        ORCH --> ROUTE{"Routing Strategy"}
+        ROUTE -->|Smart Route| R1["🎯 Single-Agent Execution Mode"]
+        ROUTE -->|Sequential| R2["⛓️ Sequential Pipeline (Context Chaining)"]
+        ROUTE -->|Parallel| R3["⚡ Concurrent Execution (asyncio.gather)"]
+    end
+
+    %% Layer 3: 5 Specialized Agents
+    subgraph Specialized_Agents ["5 Specialized Claude FinTech Agents (agents/)"]
+        A1["📊 Financial Analysis Agent<br/>• Valuation Multiples (P/E, EV/EBITDA)<br/>• Indian Macro Catalysts"]
+        A2["⚠️ Risk Assessment Agent<br/>• 5-Factor Weighted Model<br/>• Market, Credit & Liquidity"]
+        A3["💼 Portfolio Optimizer Agent<br/>• Modern Portfolio Theory (MPT)<br/>• Tax-Aware (STCG 20%, LTCG 12.5%)"]
+        A4["🔍 Fraud Detection Agent<br/>• 2-Tier Hybrid Fraud Engine<br/>• Velocity Rules & LLM Anomaly"]
+        A5["⚖️ Regulatory Compliance Agent<br/>• Statutory Audit Engine<br/>• RBI, SEBI, PMLA & DPDP 2023"]
+    end
+
+    R1 --> A1 & A2 & A3 & A4 & A5
+    R2 --> A1 ==> A2 ==> A3 ==> A4 ==> A5
+    R3 --> A1 & A2 & A3 & A4 & A5
+
+    %% Layer 4: Execution Engine & Fallback
+    subgraph Execution_Engine ["LLM Engine & Offline Simulation"]
+        LLM["🤖 Anthropic Claude 3.7 Sonnet API"]
+        MOCK["⚙️ Offline Simulation Engine (core/mock_engine.py)"]
+        A1 & A2 & A3 & A4 & A5 -.->|API Key Configured| LLM
+        A1 & A2 & A3 & A4 & A5 -.->|Offline / No API Key| MOCK
+    end
+
+    %% Layer 5: Output Guardrails
+    subgraph Output_Guardrails ["Enterprise Output Guardrails (guardrails/output_guardrails.py)"]
+        LLM --> OG["Raw Agent Output Payload"]
+        MOCK --> OG
+        OG --> O1["📜 Mandatory SEBI/RBI Regulatory Disclaimer Injection"]
+        O1 --> O2["🎯 Anti-Hallucination & Guaranteed Yield Suppression"]
+        O2 --> O3["🧹 Professional Tone & Toxicity Sanitizer"]
+        O3 --> O4["📐 Response Quality & Schema Validation"]
+    end
+
+    %% Layer 6: Telemetry & Delivery
+    O4 --> TEL["📊 Telemetry & Logging (structlog + Metrics)"]
+    TEL --> RES["✨ Structured Response Payload + Chart.js Visuals"]
+    RES --> OUT["🖥️ Client Delivery: Web Dashboard / CLI Output"]
 ```
 
 ---
@@ -293,21 +311,6 @@ docker run -p 8000:8000 --env-file .env finsphere-ai
 
 # Or with Docker Compose
 docker-compose up -d
-```
-
----
-
-## Push to Your Personal GitHub
-
-To push this repository to your personal GitHub account with complete personal ownership:
-
-```bash
-# 1. Create a new empty repository on GitHub (e.g. FinSphere-MultiAgent-AI)
-# 2. Link your remote repository:
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME.git
-
-# 3. Push to GitHub:
-git push -u origin main
 ```
 
 ---
